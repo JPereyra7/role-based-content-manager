@@ -1,6 +1,6 @@
 # Role‑Based Content Manager
 
-📎 Url: https://charpstar-joelp.netlify.app/signin
+📎 [**Live demo**](https://charpstar-joelp.netlify.app/signin) &nbsp;|&nbsp; [System diagram (Excalidraw)](https://excalidraw.com/#json=p4yNxV6wDDAW2UyVh4JjF,idvLXaUtu2sitsHobkgD5g)
 
 A full‑stack demo built with **Next.js (App Router)**, **Supabase** and **shadcn/ui**.  
 It satisfies the work‑test brief:
