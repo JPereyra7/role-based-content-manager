@@ -89,10 +89,10 @@ App runs at <http://localhost:3000>.
 
 ---
 
-## 🌐 Deploy (Vercel)
+## 🌐 Deploy (Netlify)
 
 1. Push code to GitHub.
-2. Import repo in Vercel → configure environment vars as above.
+2. Import repo in Netlify → configure environment vars as above.
 3. Select **Next.js** preset → Deploy.
 
 ---
