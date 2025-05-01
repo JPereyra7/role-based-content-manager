@@ -1,14 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
+import { format } from "date-fns/format";
+import { IProduct } from "@/app/services/IProduct";
 
-export interface Product {
-  id: string;
-  name: string;
-  description: string | null;
-  price: number | null;
-}
-
-export function getColumns(role: "admin" | "viewer"): ColumnDef<Product>[] {
+export function getColumns(role: "admin" | "viewer"): ColumnDef<IProduct>[] {
   return [
     { accessorKey: "name", header: "Name" },
     { accessorKey: "description", header: "Description" },
@@ -19,6 +14,12 @@ export function getColumns(role: "admin" | "viewer"): ColumnDef<Product>[] {
         row.original.price != null ? `$${row.original.price}` : "-",
     },
     {
+      accessorKey: "updated_at",
+      header: "Last Modified",
+      cell: ({ row }) =>
+        format(new Date(row.original.updated_at), "yyyy-MM-dd HH:mm"),
+    },
+    {
       id: "actions",
       header: () => null,
       cell: ({ row }) => {
@@ -27,14 +28,14 @@ export function getColumns(role: "admin" | "viewer"): ColumnDef<Product>[] {
           <>
             <Link
               href={`/admindashboardpage/products/${p.id}`}
-              className="text-indigo-400 underline"
+              className="text-shadow-slate-800 hover:underline"
             >
               View
             </Link>
 
             <Link
               href={`/admindashboardpage/products/${p.id}/edit`}
-              className="text-yellow-400 underline ml-2"
+              className="text-shadow-slate-800 ml-2 hover:underline"
             >
               Edit
             </Link>

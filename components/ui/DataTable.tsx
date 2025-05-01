@@ -5,7 +5,6 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
-  ColumnDef,
 } from "@tanstack/react-table";
 
 import {
@@ -16,18 +15,14 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-
 import { Button } from "@/components/ui/button";
+import { IColumnProps } from "@/app/services/IColumnProps";
 
-interface Props<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-}
-
+/** always-dark table */
 export function DataTable<TData, TValue>({
   columns,
   data,
-}: Props<TData, TValue>) {
+}: IColumnProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
@@ -36,13 +31,16 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="rounded-md border bg-gray-50 w-[70vw]">
+    <div className="w-[70vw] overflow-x-auto rounded-md border border-gray-700 bg-gray-900 text-gray-100">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow key={headerGroup.id} className="bg-gray-800">
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
+                <TableHead
+                  key={header.id}
+                  className="font-semibold text-gray-200"
+                >
                   {flexRender(
                     header.column.columnDef.header,
                     header.getContext()
@@ -54,10 +52,15 @@ export function DataTable<TData, TValue>({
         </TableHeader>
 
         <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
+          {table.getRowModel().rows.map((row, idx) => (
+            <TableRow
+              key={row.id}
+              className={
+                idx % 2 ? "bg-gray-800/60" : "bg-gray-800/40"
+              }
+            >
               {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
+                <TableCell key={cell.id} className="py-3">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
               ))}
@@ -66,10 +69,10 @@ export function DataTable<TData, TValue>({
         </TableBody>
       </Table>
 
-      <div className="p-2 flex gap-2 justify-end">
+      <div className="flex justify-end gap-2 p-3">
         <Button
           size="sm"
-          variant="secondary"
+          className="cursor-pointer bg-gray-700 text-gray-100 hover:bg-indigo-500"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
@@ -77,7 +80,7 @@ export function DataTable<TData, TValue>({
         </Button>
         <Button
           size="sm"
-          variant="secondary"
+          className="cursor-pointer bg-gray-700 text-gray-100 hover:bg-indigo-500"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >

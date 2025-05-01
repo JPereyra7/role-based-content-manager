@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { DataTable } from "@/components/ui/DataTable";
-import { getColumns, Product } from "./columns";
+import { getColumns } from "./columns";
+import { IProduct } from "@/app/services/IProduct";
 
 export default function ProductsPage() {
   const [role, setRole] = useState<"admin" | "viewer" | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<IProduct[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,8 +29,8 @@ export default function ProductsPage() {
         .single();
       setRole((userRole?.role as "admin" | "viewer") ?? "viewer");
 
-      const { data } = await supabase.from("products").select("*");
-      setProducts(data as Product[]);
+      const { data } = await supabase.from("products").select("id,name,description,price,updated_at");
+      setProducts(data as IProduct[]);
       setLoading(false);
 
       channel = supabase
@@ -41,10 +42,10 @@ export default function ProductsPage() {
             setProducts((prev) => {
               switch (eventType) {
                 case "INSERT":
-                  return [...prev, newRow as Product];
+                  return [...prev, newRow as IProduct];
                 case "UPDATE":
                   return prev.map((p) =>
-                    p.id === newRow.id ? (newRow as Product) : p
+                    p.id === newRow.id ? (newRow as IProduct) : p
                   );
                 case "DELETE":
                   return prev.filter((p) => p.id !== old.id);

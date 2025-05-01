@@ -2,10 +2,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { supabase } from "@/lib/supabase";
 
 export interface DbUser {
-    id: string;
-    email: string;
-    role: "admin" | "viewer";
-  }
+  id: string;
+  email: string;
+  role: "admin" | "viewer";
+}
+
 export function getUserColumns(
   role: "admin" | "viewer",
   selfId: string,
@@ -13,18 +14,18 @@ export function getUserColumns(
 ): ColumnDef<DbUser>[] {
   return [
     { accessorKey: "email", header: "Email" },
-    { accessorKey: "role", header: "Role" },
+    { accessorKey: "role",  header: "Role"  },
     {
       id: "actions",
       header: () => null,
       cell: ({ row }) => {
         const u = row.original;
-        if (role !== "admin" || u.id === "SELF") return null;
+        if (role !== "admin" || u.id === selfId) return null;
         const next = u.role === "admin" ? "viewer" : "admin";
 
         return (
           <button
-            className="text-indigo-400 underline"
+            className="rounded-md bg-indigo-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-indigo-500 cursor-pointer"
             onClick={async () => {
               const { error } = await supabase
                 .from("users")
@@ -42,7 +43,7 @@ export function getUserColumns(
               }
             }}
           >
-            set&nbsp;{next}
+            Set&nbsp;{next}
           </button>
         );
       },

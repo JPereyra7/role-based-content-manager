@@ -24,10 +24,10 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar>
-      <SidebarContent>
+    <Sidebar className="bg-gray-800 text-gray-200">
+      <SidebarContent className="bg-gray-800 text-gray-200">
         <SidebarGroup>
-          <SidebarGroupLabel>CharpstAR Dashboard</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-slate-50 mb-1.5">CharpstAR Dashboard</SidebarGroupLabel>
 
           <SidebarGroupContent>
             <SidebarMenu>
@@ -63,7 +63,7 @@ export function AppSidebar() {
                   onClick={handleSignOut}
                   aria-label="Sign out"
                 >
-                  <button type="button">
+                  <button className="cursor-pointer" type="button">
                     <LogOut />
                     <span>Sign Out</span>
                   </button>
