@@ -12,6 +12,8 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+
     (async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -24,13 +26,40 @@ export default function ProductsPage() {
         .select("role")
         .eq("id", session.user.id)
         .single();
-      const myRole = (userRole?.role as "admin" | "viewer") ?? "viewer";
-      setRole(myRole);
+      setRole((userRole?.role as "admin" | "viewer") ?? "viewer");
 
       const { data } = await supabase.from("products").select("*");
       setProducts(data as Product[]);
       setLoading(false);
+
+      channel = supabase
+        .channel("products-feed")
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "products" },
+          ({ eventType, new: newRow, old }) => {
+            setProducts((prev) => {
+              switch (eventType) {
+                case "INSERT":
+                  return [...prev, newRow as Product];
+                case "UPDATE":
+                  return prev.map((p) =>
+                    p.id === newRow.id ? (newRow as Product) : p
+                  );
+                case "DELETE":
+                  return prev.filter((p) => p.id !== old.id);
+                default:
+                  return prev;
+              }
+            });
+          }
+        )
+        .subscribe();
     })();
+
+    return () => {
+      if (channel) supabase.removeChannel(channel);
+    };
   }, []);
 
   if (loading) return <p className="p-8">Loading…</p>;

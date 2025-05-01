@@ -1,13 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import {
-  Home,
-  LogOut,
-  Search,
-  Settings,
-  User,
-} from "lucide-react";
+import { Home, LogOut, Search, Settings, User } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -39,8 +33,16 @@ export function AppSidebar() {
             <SidebarMenu>
               {/* static nav items */}
               {[
-                { title: "Home", url: "/admindashboardpage/products", icon: Home },
-                { title: "Users", url: "#", icon: User },
+                {
+                  title: "Home",
+                  url: "/admindashboardpage/products",
+                  icon: Home,
+                },
+                {
+                  title: "Users",
+                  url: "/admindashboardpage/users",
+                  icon: User,
+                },
                 { title: "Search", url: "#", icon: Search },
                 { title: "Settings", url: "#", icon: Settings },
               ].map((item) => (

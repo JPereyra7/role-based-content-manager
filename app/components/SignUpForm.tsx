@@ -43,7 +43,7 @@ export const SignUpForm = () => {
 
     const { error: insertError } = await supabase
       .from("users")
-      .insert([{ id: user.id, role }]);
+      .insert([{ id: user.id, role, email: user.email }]);
 
     setLoading(false);
     if (insertError) {
