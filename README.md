@@ -1,37 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Role‑Based Content Manager
 
-## Getting Started
+A full‑stack demo built with **Next.js (App Router)**, **Supabase** and **shadcn/ui**.  
+It satisfies the work‑test brief:
 
-First, run the development server:
+* Admin / Viewer roles with Supabase Auth
+* Realtime product dashboard (grid + table views)
+* User management page – Admins can flip roles, Viewers read‑only
+* Global sidebar navigation
+* Dark‑mode UI everywhere for a consistent look‑and‑feel
+
+---
+
+## 🔧 Stack
+
+| Layer | Tech |
+| ----- | ---- |
+| Front‑end | Next.js · TypeScript · TailwindCSS · shadcn/ui · @tanstack/react‑table |
+| Back‑end | Supabase (PostgreSQL + Realtime + Auth) |
+| Icons | lucide‑react |
+
+---
+
+## ✨ Key Features
+
+* **Authentication & RBAC** – Supabase Auth stores `role` in **public.users**; RLS denies writes for viewers.
+* **Products CRUD** – Admins can add, edit, delete.  Viewers only see details.
+* **Realtime updates** – Each list subscribes to a `postgres_changes` channel.  Inserts/updates/deletes flow to the UI without refresh.
+* **User management** – Admin table lists every user; one‑click toggle between *admin*⇄*viewer*.
+* **Global UI shell** – Sidebar + layout wrapper; dark palette (`bg-gray-900`, `text-gray-100`).
+
+---
+
+## ⚔️ Conflict‑Detection Approach
+
+Because every mutation also publishes over Supabase Realtime, the UI always
+receives the **latest row state**. When an Admin opens the edit form we do not
+explicitly lock the row; instead we:
+
+1. Fetch the most recent data when the form mounts.
+2. After save, the channel broadcasts an `UPDATE`; every other open view
+   re‑renders with the new values.
+
+> Assumption: simultaneous edits are rare; showing the freshest row is an
+> acceptable conflict‑resolution strategy for this scope.
+
+A more advanced version could store a `version` number or `updated_at` check and
+warn if it changed during editing.
+
+---
+
+## 🗒️ Assumptions Made
+
+* Only *admins* will create / edit products and manage users.
+* A single Supabase project is used; schemas are kept in **public** for clarity.
+* Dark‑mode is the sole theme (requirement). No light‑mode styling.
+* Was initially keen to add a list of 3D‑models instead but were dropped to meet the timeframe.
+
+---
+
+## 🚀 Local Setup
+
+### 1 · Clone and install
+
+```bash
+git clone <repo-url>
+cd role-based-content-manager
+npm install
+```
+
+### 2 · Environment variables
+
+Create **.env.local** in the project root:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
+```
+
+### 3 · Run dev server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+App runs at <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🌐 Deploy (Vercel)
 
-## Learn More
+1. Push code to GitHub.
+2. Import repo in Vercel → configure environment vars as above.
+3. Select **Next.js** preset → Deploy.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 👤 Test Accounts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Role  | Email / Password |
+|-------|------------------|
+| Admin | `admin@charpstar.com` / `Test123` |
+| Viewer| `viewer@charpstar.com` / `Test123` |
 
-## Deploy on Vercel
+Create them in Supabase Auth > Users and set `users.role` accordingly.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# role-based-content-manager
