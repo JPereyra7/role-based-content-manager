@@ -1,5 +1,7 @@
 # Role‑Based Content Manager
 
+📎 Url: https://charpstar-joelp.netlify.app/signin
+
 A full‑stack demo built with **Next.js (App Router)**, **Supabase** and **shadcn/ui**.  
 It satisfies the work‑test brief:
 
